@@ -9,7 +9,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::get();
+        $posts = Post::paginate();
         return view('admin.posts.index',compact('posts'));
     }
     public function create(){
@@ -36,5 +36,24 @@ class PostController extends Controller
             return redirect()
             ->route('posts.index')
             ->with('message','Post Deletado com sucesso!');
+    }
+    public function edit($id)
+    {
+        if(!$post = Post::find($id)){
+            return redirect()->route('posts.index');
+        }
+    
+        return view('admin.posts.edit',compact('post'));
+    
+    }
+    public function update(StoreUpdatePost $request, $id){
+        if(!$post = Post::find($id)){
+            return redirect()->route('posts.index');
+        }
+        $post->update($request->all());
+
+        return redirect()
+            ->route('posts.index')
+            ->with('message',"Post {$post->title} Editado  com sucesso!");
     }
 }
